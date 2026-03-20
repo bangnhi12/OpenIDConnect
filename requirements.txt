@@ -1,0 +1,7 @@
+Flask
+Flask-Session
+python-dotenv
+requests
+PyJWT
+cryptography
+gunicorn
