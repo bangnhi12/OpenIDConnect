@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - OIDC Demo</title>
+</head>
+<body>
+    <div class="container">
+        <h1>User Profile</h1>
+        
+        <div class="card">
+            <h2>Thông tin người dùng</h2>
+            
+            <div class="user-info">
+                {% if user and user.picture %}
+                <img src="{{ user.picture }}" alt="Profile picture" class="avatar">
+                {% endif %}
+                
+                {% if user %}
+                <table>
+                    <tr>
+                        <th>Name:</th>
+                        <td>{{ user.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email:</th>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    <tr>
+                        <th>User ID (sub):</th>
+                        <td>{{ user.sub }}</td>
+                    </tr>
+                </table>
+                {% else %}
+                <p>No user information available</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>JWT Token (tự định nghĩa)</h2>
+            <p><strong>Token:</strong></p>
+            <div class="token-display">{{ jwt_token }}</div>
+            
+            <p><strong>Decoded Payload:</strong></p>
+            <pre class="payload-display">
+               {% for key, value in jwt_payload.items() %}
+                {{ key }}: {{ value }}
+                {% endfor %}
+                </pre>
+
+        </div>
+        
+        <div class="actions">
+            <a href="{{ url_for('logout') }}" class="btn btn-danger">
+                Đăng xuất
+            </a>
+            <a href="{{ url_for('index') }}" class="btn btn-primary" style="background: #6c757d;">
+                Về trang chủ
+            </a>
+        </div>
+    </div>
+</body>
+</html>
