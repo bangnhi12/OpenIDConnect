@@ -11,6 +11,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CERT_FILE = os.getenv('TLS_CERT_FILE', os.path.join(BASE_DIR, 'certificate.crt'))
+KEY_FILE = os.getenv('TLS_KEY_FILE', os.path.join(BASE_DIR, 'private.key'))
+USE_SSL = os.path.exists(CERT_FILE) and os.path.exists(KEY_FILE)
 
 
 app = Flask(__name__)
@@ -28,7 +32,7 @@ APP_URL = os.getenv('APP_URL')
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_USE_SIGNER'] = True
-app.config['SESSION_COOKIE_SECURE'] = False
+app.config['SESSION_COOKIE_SECURE'] = USE_SSL
 app.config['SESSION_COOKIE_HTTPONLY'] = True  
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 Session(app)
@@ -329,9 +333,15 @@ def debug_session():
 
 if __name__ == '__main__':
     
+    ssl_context = (CERT_FILE, KEY_FILE) if USE_SSL else None
 
+    if USE_SSL:
+        print(f"Running HTTPS with certificate: {CERT_FILE}")
+    else:
+        print('TLS cert/key not found, running HTTP mode')
     app.run(
             host='0.0.0.0',
             port=5000,
-            debug=True
+            debug=True,
+            ssl_context = ssl_context
         )
